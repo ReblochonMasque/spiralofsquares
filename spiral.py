@@ -8,12 +8,10 @@ import random
 import tkinter as tk
 
 from anchor import Anchor
+from rectangle import Rectangle
 
 WIDTH, HEIGHT = 800, 800
 CENTER = WIDTH // 2, HEIGHT // 2
-
-
-
 
 
 class Spiral:

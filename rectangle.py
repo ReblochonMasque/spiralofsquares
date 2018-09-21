@@ -2,12 +2,15 @@
 a Rectangle
 """
 
+from anchor import Anchor
+
 
 class Rectangle:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.bbox = [Anchor(*CENTER), Anchor(*CENTER) + (self.width, self.height)]
+        center = self.width//2, self.height//2
+        self.bbox = [Anchor(*center), Anchor(*center) + (self.width, self.height)]
         self.norm_bbox = None
         self.normalize_bbox()
 
