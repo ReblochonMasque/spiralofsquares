@@ -15,14 +15,21 @@ CENTER = WIDTH // 2, HEIGHT // 2
 
 
 class Spiral:
-    def __init__(self, anchor=CENTER, direction='right', xoff=5, yoff=5):
+    """
+    'right' --> add to the right side, going down
+    'down'  --> add to the bottom side, going left
+    'left'  --> add to the left side, going up
+    'up'    --> add to tthe top side, going right
+
+    """
+
+    def __init__(self, anchor=CENTER, add_to='right', xoff=5, yoff=5):
         self.anchor = Anchor(*anchor)
-        self.next_anchors = {'right': self.anchor, 'down': self.anchor, 'left': self.anchor, 'up': self.anchor}
         lr, td = self.anchor.x, self.anchor.y
         self.boundaries = {'right': lr, 'down': td, 'left': lr, 'up': td}
         self.current_x, self.current_y = self.anchor
         self.turn_boundaries = None
-        self.direction = direction
+        self.add_to = add_to
         self.xoff = xoff
         self.yoff = yoff
         self.rectangles = []
@@ -31,9 +38,9 @@ class Spiral:
     def add_rectangle(self, rect):
         self.rectangles.append(rect)
         rect.calc_bbox(self.anchor)  # place at correct anchor
-        self.calc_next_direction()
+        self.calc_next_add_to_side()
 
-    def calc_next_direction(self):
+    def calc_next_add_to_side(self):
         w, h = self.rectangles[-1].width, self.rectangles[-1].height
 
         if self.turn == 0:
@@ -43,49 +50,49 @@ class Spiral:
         if self.turn % 4 == 0:
             self.turn_boundaries = {k: v for k, v in self.boundaries.items()}
 
-        if self.direction == 'right':
+        if self.add_to == 'right':
             if self.current_x + w > self.turn_boundaries['right']:  # ne depasse pas la border
                 self.current_x = self.turn_boundaries['right'] + w + self.xoff
                 self.current_y = self.turn_boundaries['up']
             else:
                 self.turn += 1
-                self.direction = 'down'
+                self.add_to = 'down'
                 self.current_x = self.turn_boundaries['right'] - self.xoff
-                self.current_y = self.turn_boundaries['up'] + self.yoff
+                self.current_y = self.turn_boundaries['down'] + self.yoff
             self.boundaries['right'] = max(self.boundaries['right'], self.turn_boundaries['right'] + w)
             self.boundaries['down'] = max(self.boundaries['down'], self.turn_boundaries['down'] + h)
 
-        elif self.direction == 'down':
+        elif self.add_to == 'down':
             if self.current_y + h > self.turn_boundaries['down']:  # ne depasse pas la border
                 self.current_x = self.turn_boundaries['right']
                 self.current_y = self.turn_boundaries['up'] + h + self.yoff
             else:
                 self.turn += 1
-                self.direction = 'left'
+                self.add_to = 'left'
                 self.current_y = self.turn_boundaries['down'] + self.yoff
                 self.current_x = self.turn_boundaries['right'] - self.xoff
             self.boundaries['left'] = min(self.boundaries['left'], self.turn_boundaries['left'] - w)
             self.boundaries['down'] = max(self.boundaries['down'], self.turn_boundaries['down'] + h)
 
-        elif self.direction == 'left':
+        elif self.add_to == 'left':
             if self.current_x - w < self.turn_boundaries['left']:  # ne depasse pas la border
                 self.current_x -= w + self.xoff
                 self.current_y = self.turn_boundaries['down']
             else:
                 self.turn += 1
-                self.direction = 'up'
+                self.add_to = 'up'
                 self.current_y = self.turn_boundaries['down'] - self.yoff
                 self.current_x = self.turn_boundaries['left'] - self.xoff
             self.boundaries['left'] = min(self.boundaries['left'], self.turn_boundaries['left'] - w)
             self.boundaries['up'] = min(self.boundaries['up'], self.turn_boundaries['up'] - h)
 
-        elif self.direction == 'up':
+        elif self.add_to == 'up':
             if self.current_y - h < self.turn_boundaries['up']:  # ne depasse pas la border
                 self.current_x = self.turn_boundaries['left']
                 self.current_y += h - self.yoff
             else:
                 self.turn += 1
-                self.direction = 'right'
+                self.add_to = 'right'
                 self.current_y = self.turn_boundaries['up'] - self.yoff
                 self.current_x = self.turn_boundaries['left'] + self.xoff
             self.boundaries['right'] = max(self.boundaries['right'], self.turn_boundaries['right'] + w)
