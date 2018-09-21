@@ -11,26 +11,6 @@ WIDTH, HEIGHT = 800, 800
 CENTER = WIDTH // 2, HEIGHT // 2
 
 
-class Anchor:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def __add__(self, other):
-        return Anchor(self.x + other[0], self.y + other[1])
-
-    def __sub__(self, other):
-        return Anchor(self.x - other[0], self.y - other[1])
-
-    def __iter__(self):
-        yield self.x
-        yield self.y
-
-    def __getitem__(self, idx):
-        a = (self.x, self.y)
-        return a[idx]
-
-
 class Rectangle:
     def __init__(self, width, height):
         self.width = width
