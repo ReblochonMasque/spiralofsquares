@@ -50,7 +50,6 @@ class Spiral:
         """
         self.inner_boundaries = {'right': self.anchor.x + rect.width, 'down': self.anchor.y + rect.height,
                                  'left': self.anchor.x, 'up': self.anchor.y}
-        print(f'self.inner_boundaries: {self.inner_boundaries}')
         self.boundaries = {k: v for k, v in self.inner_boundaries.items()}
         rect.calc_bbox(self.anchor.clone())
         self.anchor = self.anchor + (rect.width + self.xoffset, 0)
@@ -87,12 +86,8 @@ class Spiral:
 
         """
 
-        # if self.turn % 4 == 0 and self.turn != 0:
-        #     self.inner_boundaries = {k: v for k, v in self.boundaries.items()}
-
         w, h = self.rectangles[-1].width, self.rectangles[-1].height
         current_x, current_y = self.anchor
-        print(self.add_to, current_x, current_y, end=', ')
 
         if self.add_to == 'right':
             if current_y + h < self.inner_boundaries['down']:  # ne depasse pas la border
@@ -107,8 +102,6 @@ class Spiral:
             self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
             self.boundaries['down'] = max(self.boundaries['down'], self.inner_boundaries['down'] + h)
 
-            print(current_x, current_y)
-
         elif self.add_to == 'down':
             # current_x is top left of last square
             if current_x > self.inner_boundaries['left']:  # ne depasse pas la border
@@ -119,17 +112,14 @@ class Spiral:
                 current_x = self.inner_boundaries['left'] - self.xoffset
                 current_y = self.inner_boundaries['down']
             self.anchor = Anchor(current_x, current_y)
-            self.boundaries['left'] = min(self.boundaries['left'], self.inner_boundaries['left'] - w)
             self.boundaries['down'] = max(self.boundaries['down'], self.inner_boundaries['down'] + h)
-
-
+            self.boundaries['left'] = min(self.boundaries['left'], self.inner_boundaries['left'] - w)
 
         elif self.add_to == 'left':
             if current_y > self.inner_boundaries['up']:  # ne depasse pas la border
                 current_x = self.inner_boundaries['left'] - self.xoffset
                 current_y = self.inner_boundaries['down'] - self.yoffset - h
             else:
-                print('first up')
                 self.turn += 1
                 self.add_to = 'up'
                 current_x = self.inner_boundaries['left']
@@ -138,26 +128,18 @@ class Spiral:
             self.boundaries['left'] = min(self.boundaries['left'], self.inner_boundaries['left'] - w)
             self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'])
 
-
         elif self.add_to == 'up':
-
-            print('----------------->up')
-            print(f'self.inner_boundaries: {self.inner_boundaries}')
-
             if self.current_x + w < self.inner_boundaries['right']:  # ne depasse pas la border
-                print('----------------->up---------in')
                 current_x = self.inner_boundaries['left'] + w + self.xoffset
                 current_y = self.inner_boundaries['up'] - self.yoffset
-        #     else:
-        #         self.turn += 1
-        #         self.add_to = 'right'
-        #         current_y = self.inner_boundaries['up'] - self.yoffset
-        #         current_x = self.inner_boundaries['left'] + self.xoffset
+            else:
+                self.turn += 1
+                self.add_to = 'right'
+                current_x = self.inner_boundaries['right'] + w + self.xoffset
+                current_y = self.inner_boundaries['up']
             self.anchor = Anchor(current_x, current_y)
-
-        #     self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
-        #     self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'] - h)
-
+            self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'] - h)
+            self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
 
 
 if __name__ == '__main__':
@@ -165,7 +147,7 @@ if __name__ == '__main__':
     cr = 1
     num_rect = 0
     if cr:
-        num_rect = 9
+        num_rect = 10
     else:
         num_rect = 14
     rectangles = [Rectangle(random.randrange(20, 100), random.randrange(20, 100)) for _ in range(num_rect)]
@@ -180,7 +162,7 @@ if __name__ == '__main__':
 
     if cr:
         for rect, color in zip(spiral.rectangles, ['blue', 'red', 'green', 'black', 'cyan', 'grey', 'purple',
-                                                   'lightgreen', 'lightblue']):
+                                                   'lightgreen', 'lightblue', 'gold']):
             tl, br = rect.norm_bbox
             canvas.create_rectangle(*tl, *br, fill='', outline=color, width=2)
             x, y = tl
