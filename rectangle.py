@@ -36,6 +36,10 @@ class Rectangle:
         bl = tl[0], br[1]
         return tl, tr, br, bl
 
+    def get_center(self):
+        tl, br = self.bbox
+        return tl.get_mid(br)
+
 
 if __name__ == '__main__':
     pass

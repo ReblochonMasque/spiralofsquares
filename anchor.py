@@ -23,6 +23,10 @@ class Anchor:
         a = (self.x, self.y)
         return a[idx]
 
+    def get_mid(self, other):
+        ox, oy = other[0], other[1]
+        return Anchor((self.x + ox) // 2, (self.y + oy) // 2)
+
     def clone(self):
         return Anchor(self.x, self.y)
 
