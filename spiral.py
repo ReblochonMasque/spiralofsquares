@@ -37,17 +37,23 @@ class Spiral:
 
     def add_rectangle(self, rect):
         self.rectangles.append(rect)
-        rect.calc_bbox(self.anchor)  # place at correct anchor
+        self.place(rect)
         self.calc_next_add_to_side()
+
+    def place(self, rect):
+        rect.calc_bbox(self.anchor)  # place at correct anchor
+        if len(self.rectangles) == 2:
+            self.anchor = self.anchor + (self.rectangles[0].width, 0)
+            rect.calc_bbox(self.anchor)
 
     def calc_next_add_to_side(self):
         w, h = self.rectangles[-1].width, self.rectangles[-1].height
 
-        if self.turn == 0:
+        if self.turn_boundaries is None:
             self.turn_boundaries = {'right': self.anchor.x + w, 'down': self.anchor.y + h,
                                     'left': self.anchor.x, 'up': self.anchor.y}
 
-        if self.turn % 4 == 0:
+        if self.turn % 4 == 0 and self.turn != 0:
             self.turn_boundaries = {k: v for k, v in self.boundaries.items()}
 
         if self.add_to == 'right':
