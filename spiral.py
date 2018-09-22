@@ -91,6 +91,7 @@ class Spiral:
 
         if self.add_to == 'right':
             if current_y + h < self.inner_boundaries['down']:  # ne depasse pas la border
+                current_x = self.inner_boundaries['right'] + self.xoffset
                 current_y += h + self.yoffset
             else:
                 self.add_to = 'down'
@@ -133,10 +134,12 @@ class Spiral:
                 current_x = self.inner_boundaries['left'] + w + self.xoffset
                 current_y = self.inner_boundaries['up'] - self.yoffset
             else:
+                self.inner_boundaries = {k: v for k, v in self.boundaries.items()}
                 self.turn += 1
                 self.add_to = 'right'
-                current_x = self.inner_boundaries['right'] + w + self.xoffset
-                current_y = self.inner_boundaries['up']
+                current_x = self.inner_boundaries['right'] + self.xoffset
+                current_y = self.boundaries['up']
+
             self.anchor = Anchor(current_x, current_y)
             self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'] - h)
             self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
