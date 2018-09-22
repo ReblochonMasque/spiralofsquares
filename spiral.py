@@ -37,11 +37,8 @@ class Spiral:
 
     def add_rectangle(self, rect):
         self.rectangles.append(rect)
-        num_rect = len(self.rectangles)
-        if num_rect == 1:
+        if len(self.rectangles) == 1:
             self.place_first(rect)
-        # elif num_rect == 2:
-        #     self.place_second(rect)
         else:
             self.place(rect)
             self.calc_next_add_to_side()
@@ -53,86 +50,114 @@ class Spiral:
         """
         self.inner_boundaries = {'right': self.anchor.x + rect.width, 'down': self.anchor.y + rect.height,
                                  'left': self.anchor.x, 'up': self.anchor.y}
+        print(f'self.inner_boundaries: {self.inner_boundaries}')
         self.boundaries = {k: v for k, v in self.inner_boundaries.items()}
-        self.place(rect)
+        rect.calc_bbox(self.anchor.clone())
         self.anchor = self.anchor + (rect.width + self.xoffset, 0)
         self.add_to = 'right'
-        self.boundaries[self.add_to] += rect.width + self.xoffset
-
-    # def place_second(self, rect):
-    #     """
-    #     places the first rectangle at current anchor
-    #     updates the anchor
-    #     """
-    #     rect.calc_bbox(self.anchor.clone())
-    #     self.add_to = 'right'
-    #     self.turn += 1
+        self.boundaries['right'] += rect.width + self.xoffset
+        self.boundaries['down'] += rect.height + self.yoffset
 
     def place(self, rect):
         """
         places a rectangle at the current anchor, taking offsets and side into account
         """
-        rect.calc_bbox(self.anchor.clone())
+        if self.add_to == 'right':
+            rect.calc_bbox(self.anchor.clone())
+
+        if self.add_to == 'down':
+            self.anchor = self.anchor + (-rect.width, 0)
+            rect.calc_bbox(self.anchor.clone())
+
+        if self.add_to == 'left':
+            anchor = self.anchor + (-rect.width, -rect.height)
+            rect.calc_bbox(anchor.clone())
+            self.anchor = self.anchor + (0, -rect.height)
+
+        if self.add_to == 'up':
+            anchor = self.anchor + (0, -rect.height)
+            rect.calc_bbox(anchor)
+            self.anchor = self.anchor + (rect.width, self.xoffset)
 
     def calc_next_add_to_side(self):
         """
-        calculates the next anchor placement and the side we are on without worrying about offsets
+        calculates the next anchor placement and the side we are on.
+        updates the inner_boundary each full turn cycle
+        updates the boundary each new rectangle (used to update inner at next turn cycle)
+
         """
 
-        w, h = self.rectangles[-1].width, self.rectangles[-1].height
+        # if self.turn % 4 == 0 and self.turn != 0:
+        #     self.inner_boundaries = {k: v for k, v in self.boundaries.items()}
 
-        if self.turn % 4 == 0 and self.turn != 0:
-            self.inner_boundaries = {k: v for k, v in self.boundaries.items()}
+        w, h = self.rectangles[-1].width, self.rectangles[-1].height
+        current_x, current_y = self.anchor
+        print(self.add_to, current_x, current_y, end=', ')
 
         if self.add_to == 'right':
-            if self.current_x + w > self.inner_boundaries['right']:  # ne depasse pas la border
-                self.current_x = self.inner_boundaries['right'] + w + self.xoffset
-                self.current_y = self.inner_boundaries['up']
+            if current_y + h < self.inner_boundaries['down']:  # ne depasse pas la border
+                current_y += h + self.yoffset
             else:
-                self.turn += 1
                 self.add_to = 'down'
-                self.current_x = self.inner_boundaries['right'] - self.xoffset
-                self.current_y = self.inner_boundaries['down'] + self.yoffset
+                current_x += self.xoffset
+                self.turn += 1
+                current_x = self.inner_boundaries['right']
+                current_y = self.inner_boundaries['down'] + self.yoffset
+            self.anchor = Anchor(current_x, current_y)
             self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
             self.boundaries['down'] = max(self.boundaries['down'], self.inner_boundaries['down'] + h)
 
+            print(current_x, current_y)
+
         elif self.add_to == 'down':
-            if self.current_y + h > self.inner_boundaries['down']:  # ne depasse pas la border
-                self.current_x = self.inner_boundaries['right']
-                self.current_y = self.inner_boundaries['up'] + h + self.yoffset
+            # current_x is top left of last square
+            if current_x > self.inner_boundaries['left']:  # ne depasse pas la border
+                current_x -= self.xoffset
             else:
                 self.turn += 1
                 self.add_to = 'left'
-                self.current_y = self.inner_boundaries['down'] + self.yoffset
-                self.current_x = self.inner_boundaries['right'] - self.xoffset
+                current_x = self.inner_boundaries['left'] - self.xoffset
+                current_y = self.inner_boundaries['down']
+            self.anchor = Anchor(current_x, current_y)
             self.boundaries['left'] = min(self.boundaries['left'], self.inner_boundaries['left'] - w)
             self.boundaries['down'] = max(self.boundaries['down'], self.inner_boundaries['down'] + h)
 
+
+
         elif self.add_to == 'left':
-            if self.current_x - w < self.inner_boundaries['left']:  # ne depasse pas la border
-                self.current_x -= w + self.xoffset
-                self.current_y = self.inner_boundaries['down']
+            if current_y > self.inner_boundaries['up']:  # ne depasse pas la border
+                current_x = self.inner_boundaries['left'] - self.xoffset
+                current_y = self.inner_boundaries['down'] - self.yoffset - h
             else:
+                print('first up')
                 self.turn += 1
                 self.add_to = 'up'
-                self.current_y = self.inner_boundaries['down'] - self.yoffset
-                self.current_x = self.inner_boundaries['left'] - self.xoffset
+                current_x = self.inner_boundaries['left']
+                current_y = self.inner_boundaries['up'] - self.yoffset
+            self.anchor = Anchor(current_x, current_y)
             self.boundaries['left'] = min(self.boundaries['left'], self.inner_boundaries['left'] - w)
-            self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'] - h)
+            self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'])
+
 
         elif self.add_to == 'up':
-            if self.current_y - h < self.inner_boundaries['up']:  # ne depasse pas la border
-                self.current_x = self.inner_boundaries['left']
-                self.current_y += h - self.yoffset
-            else:
-                self.turn += 1
-                self.add_to = 'right'
-                self.current_y = self.inner_boundaries['up'] - self.yoffset
-                self.current_x = self.inner_boundaries['left'] + self.xoffset
-            self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
-            self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'] - h)
 
-        self.anchor = Anchor(self.current_x, self.current_y)
+            print('----------------->up')
+            print(f'self.inner_boundaries: {self.inner_boundaries}')
+
+            if self.current_x + w < self.inner_boundaries['right']:  # ne depasse pas la border
+                print('----------------->up---------in')
+                current_x = self.inner_boundaries['left'] + w + self.xoffset
+                current_y = self.inner_boundaries['up'] - self.yoffset
+        #     else:
+        #         self.turn += 1
+        #         self.add_to = 'right'
+        #         current_y = self.inner_boundaries['up'] - self.yoffset
+        #         current_x = self.inner_boundaries['left'] + self.xoffset
+            self.anchor = Anchor(current_x, current_y)
+
+        #     self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
+        #     self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'] - h)
+
 
 
 if __name__ == '__main__':
@@ -140,7 +165,7 @@ if __name__ == '__main__':
     cr = 1
     num_rect = 0
     if cr:
-        num_rect = 4
+        num_rect = 9
     else:
         num_rect = 14
     rectangles = [Rectangle(random.randrange(20, 100), random.randrange(20, 100)) for _ in range(num_rect)]
@@ -154,7 +179,8 @@ if __name__ == '__main__':
     canvas.pack(expand=True, fill='both')
 
     if cr:
-        for rect, color in zip(spiral.rectangles, ['blue', 'red', 'green', 'black']):
+        for rect, color in zip(spiral.rectangles, ['blue', 'red', 'green', 'black', 'cyan', 'grey', 'purple',
+                                                   'lightgreen', 'lightblue']):
             tl, br = rect.norm_bbox
             canvas.create_rectangle(*tl, *br, fill='', outline=color, width=2)
             x, y = tl
