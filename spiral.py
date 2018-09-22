@@ -41,10 +41,9 @@ class Spiral:
         self.calc_next_add_to_side()
 
     def place(self, rect):
-        rect.calc_bbox(self.anchor)  # place at correct anchor
         if len(self.rectangles) == 2:
-            self.anchor = self.anchor + (self.rectangles[0].width, 0)
-            rect.calc_bbox(self.anchor)
+            self.anchor = self.anchor + (2 * self.xoff, -self.rectangles[0].height - self.yoff)
+        rect.calc_bbox(self.anchor)  # place at correct anchor
 
     def calc_next_add_to_side(self):
         w, h = self.rectangles[-1].width, self.rectangles[-1].height
