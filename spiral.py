@@ -102,6 +102,8 @@ class Spiral:
             self.anchor = Anchor(current_x, current_y)
             self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
             self.boundaries['down'] = max(self.boundaries['down'], self.inner_boundaries['down'] + h)
+            if len(self.rectangles) > 2:
+                self.inner_boundaries['up'] = self.boundaries['up']
 
         elif self.add_to == 'down':
             # current_x is top left of last square
@@ -115,6 +117,7 @@ class Spiral:
             self.anchor = Anchor(current_x, current_y)
             self.boundaries['down'] = max(self.boundaries['down'], self.inner_boundaries['down'] + h)
             self.boundaries['left'] = min(self.boundaries['left'], self.inner_boundaries['left'] - w)
+            self.inner_boundaries['right'] = self.boundaries['right']
 
         elif self.add_to == 'left':
             if current_y > self.inner_boundaries['up']:  # ne depasse pas la border
@@ -128,21 +131,22 @@ class Spiral:
             self.anchor = Anchor(current_x, current_y)
             self.boundaries['left'] = min(self.boundaries['left'], self.inner_boundaries['left'] - w)
             self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'])
+            self.inner_boundaries['down'] = self.boundaries['down']
 
         elif self.add_to == 'up':
             if self.current_x + w < self.inner_boundaries['right']:  # ne depasse pas la border
                 current_x = self.inner_boundaries['left'] + w + self.xoffset
                 current_y = self.inner_boundaries['up'] - self.yoffset
             else:
-                self.inner_boundaries = {k: v for k, v in self.boundaries.items()}
+                # self.inner_boundaries = {k: v for k, v in self.boundaries.items()}
                 self.turn += 1
                 self.add_to = 'right'
                 current_x = self.inner_boundaries['right'] + self.xoffset
                 current_y = self.boundaries['up']
-
             self.anchor = Anchor(current_x, current_y)
             self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'] - h)
             self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
+            self.inner_boundaries['left'] = self.boundaries['left']
 
 
 if __name__ == '__main__':
@@ -164,17 +168,21 @@ if __name__ == '__main__':
     canvas.pack(expand=True, fill='both')
 
     if cr:
-        for rect, color in zip(spiral.rectangles, ['blue', 'red', 'green', 'black', 'cyan', 'grey', 'purple',
-                                                   'lightgreen', 'lightblue', 'gold']):
+        for idx, (rect, color) in enumerate(zip(spiral.rectangles, ['blue', 'red', 'green', 'black', 'cyan', 'grey', 'purple',
+                                                   'lightgreen', 'lightblue', 'gold'])):
             tl, br = rect.norm_bbox
             canvas.create_rectangle(*tl, *br, fill='', outline=color, width=2)
             x, y = tl
             canvas.create_oval(x + 2, y + 2, x - 2, y - 1)
+            print(*rect.get_center())
+            canvas.create_text(*rect.get_center(), text=str(idx))
     else:
-        for rect in spiral.rectangles:
+        for idx, rect in enumerate(spiral.rectangles):
             tl, br = rect.norm_bbox
             canvas.create_rectangle(*tl, *br, fill='', outline='black', width=2)
             x, y = tl
             canvas.create_oval(x + 2, y + 2, x - 2, y - 1)
+            print(*rect.get_center())
+            canvas.create_text(*rect.get_center(), text=str(idx))
 
     root.mainloop()
