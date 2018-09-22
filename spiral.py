@@ -34,6 +34,7 @@ class Spiral:
         self.yoffset = yoffset
         self.rectangles = []
         self.turn = 0
+        self.last_turn_first_anchor = None
 
     def add_rectangle(self, rect):
         self.rectangles.append(rect)
@@ -56,6 +57,7 @@ class Spiral:
         self.add_to = 'right'
         self.boundaries['right'] += rect.width + self.xoffset
         self.boundaries['down'] += rect.height + self.yoffset
+        self.last_turn_first_anchor = self.anchor.clone()
 
     def place(self, rect):
         """
@@ -91,6 +93,7 @@ class Spiral:
 
         if self.add_to == 'right':
             if current_y + h < self.inner_boundaries['down']:  # ne depasse pas la border
+
                 current_x = self.inner_boundaries['right'] + self.xoffset
                 current_y += h + self.yoffset
             else:
@@ -102,8 +105,7 @@ class Spiral:
             self.anchor = Anchor(current_x, current_y)
             self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
             self.boundaries['down'] = max(self.boundaries['down'], self.inner_boundaries['down'] + h)
-            if len(self.rectangles) > 2:
-                self.inner_boundaries['up'] = self.boundaries['up']
+            self.inner_boundaries['left'] = self.boundaries['left']
 
         elif self.add_to == 'down':
             # current_x is top left of last square
@@ -117,7 +119,7 @@ class Spiral:
             self.anchor = Anchor(current_x, current_y)
             self.boundaries['down'] = max(self.boundaries['down'], self.inner_boundaries['down'] + h)
             self.boundaries['left'] = min(self.boundaries['left'], self.inner_boundaries['left'] - w)
-            self.inner_boundaries['right'] = self.boundaries['right']
+            self.inner_boundaries['up'] = self.boundaries['up']
 
         elif self.add_to == 'left':
             if current_y > self.inner_boundaries['up']:  # ne depasse pas la border
@@ -131,22 +133,27 @@ class Spiral:
             self.anchor = Anchor(current_x, current_y)
             self.boundaries['left'] = min(self.boundaries['left'], self.inner_boundaries['left'] - w)
             self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'])
-            self.inner_boundaries['down'] = self.boundaries['down']
+            self.inner_boundaries['right'] = self.boundaries['right']
 
         elif self.add_to == 'up':
-            if self.current_x + w < self.inner_boundaries['right']:  # ne depasse pas la border
-                current_x = self.inner_boundaries['left'] + w + self.xoffset
+            # if self.current_x < self.inner_boundaries['right']:  # ne depasse pas la border
+            if self.current_x < self.last_turn_first_anchor.x:
+                current_x = current_x + self.xoffset
                 current_y = self.inner_boundaries['up'] - self.yoffset
+
             else:
                 # self.inner_boundaries = {k: v for k, v in self.boundaries.items()}
                 self.turn += 1
                 self.add_to = 'right'
-                current_x = self.inner_boundaries['right'] + self.xoffset
-                current_y = self.boundaries['up']
+                print('one turn completed, reset to first anchor')
+                current_x = self.boundaries['right']
+                current_y = self.inner_boundaries['up']
+                current_x = self.boundaries['right'] + self.xoffset
+                # current_y = self.last_turn_first_anchor.y
             self.anchor = Anchor(current_x, current_y)
             self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'] - h)
             self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
-            self.inner_boundaries['left'] = self.boundaries['left']
+            self.inner_boundaries['down'] = self.boundaries['down']
 
 
 if __name__ == '__main__':
@@ -154,7 +161,7 @@ if __name__ == '__main__':
     cr = 1
     num_rect = 0
     if cr:
-        num_rect = 10
+        num_rect = 18
     else:
         num_rect = 14
     rectangles = [Rectangle(random.randrange(20, 100), random.randrange(20, 100)) for _ in range(num_rect)]
@@ -168,8 +175,8 @@ if __name__ == '__main__':
     canvas.pack(expand=True, fill='both')
 
     if cr:
-        for idx, (rect, color) in enumerate(zip(spiral.rectangles, ['blue', 'red', 'green', 'black', 'cyan', 'grey', 'purple',
-                                                   'lightgreen', 'lightblue', 'gold'])):
+        for idx, (rect, color) in enumerate(zip(spiral.rectangles, ['blue', 'red', 'green', 'black', 'cyan', 'grey', 'purple',\
+                'lightgreen', 'lightblue', 'gold', 'black', 'blue', 'red', 'green', 'black', 'cyan', 'grey', 'purple'])):
             tl, br = rect.norm_bbox
             canvas.create_rectangle(*tl, *br, fill='', outline=color, width=2)
             x, y = tl
