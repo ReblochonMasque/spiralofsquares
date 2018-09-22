@@ -23,6 +23,9 @@ class Anchor:
         a = (self.x, self.y)
         return a[idx]
 
+    def clone(self):
+        return Anchor(self.x, self.y)
+
 
 if __name__ == '__main__':
     pass
