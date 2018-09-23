@@ -30,6 +30,9 @@ class Anchor:
     def clone(self):
         return Anchor(self.x, self.y)
 
+    def __str__(self):
+        return f'Anchor({self.x}, {self.y})'
+
 
 if __name__ == '__main__':
     pass
