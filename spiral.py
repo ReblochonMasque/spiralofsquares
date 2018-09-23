@@ -16,6 +16,7 @@ CENTER = WIDTH // 2, HEIGHT // 2
 
 class Spiral:
     """
+    states:
     'right' --> add to the right side, going down
     'down'  --> add to the bottom side, going left
     'left'  --> add to the left side, going up
@@ -23,7 +24,7 @@ class Spiral:
 
     """
 
-    def __init__(self, anchor=CENTER, xoffset=5, yoffset=5):
+    def __init__(self, anchor=CENTER, xoffset: int=5, yoffset: int=5):
         self.anchor = Anchor(*anchor)
         lr, td = self.anchor.x, self.anchor.y
         self.boundaries = {'right': lr, 'down': td, 'left': lr, 'up': td}
@@ -159,7 +160,6 @@ class Spiral:
 if __name__ == '__main__':
 
     cr = 1
-    num_rect = 0
     if cr:
         num_rect = 18
     else:
