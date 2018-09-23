@@ -10,7 +10,8 @@ class Rectangle:
         self.width = width
         self.height = height
         center = self.width//2, self.height//2
-        self.bbox = [Anchor(*center), Anchor(*center) + (self.width, self.height)]
+        self.bbox = [Anchor(*center) + (-self.width//2, -self.height//2),
+                     Anchor(*center) + (self.width//2, self.height//2)]
         self.norm_bbox = None
         self.normalize_bbox()
 
