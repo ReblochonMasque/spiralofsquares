@@ -41,6 +41,11 @@ class Rectangle:
         tl, br = self.bbox
         return tl.get_mid(br)
 
+    def __str__(self):
+        res = f'Rectangle of width= {self.width}, height= {self.height}, bbox at: ' \
+              f'{", ".join(str(elt) for elt in self.bbox)}'
+        return res
+
 
 if __name__ == '__main__':
     pass
