@@ -15,6 +15,47 @@ WIDTH, HEIGHT = 800, 800
 CENTER = WIDTH // 2, HEIGHT // 2
 
 
+class RectangleChoice(tk.Canvas):
+    whs = [(20, 80), (20, 60), (20, 40),
+           (80, 20), (60, 20), (40, 20),
+           (80, 80), (60, 60), (40, 40), (20, 20),
+           (80, 60), (80, 40), (60, 80), (60, 40)]
+    pos = [(10, 10), (40, 10), (70, 10),
+           (10, 100), (10, 130), (10, 160),
+           (10, 190), (10, 280), (10, 350), (60, 350),
+           (10, 400), (10, 470), (10, 520), (10, 610)]
+
+    def __init__(self, master):
+        self.master = master
+        super().__init__(self.master, width=100, height=HEIGHT, bg='grey80')
+        self.rectangle_models_ids2 = {}
+        self.make_rectangle_collection()
+
+    def make_rectangle_collection(self):
+
+        rectangle_models = []
+        for wh, pos in zip(RectangleChoice.whs, RectangleChoice.pos):
+            w, h = wh
+            rect = Rectangle(w, h)
+            rect.calc_bbox(Anchor(*pos))
+            rectangle_models.append(rect)
+
+        for rect in rectangle_models:
+            tl, br = rect.norm_bbox
+            self.rectangle_models_ids2[self.create_rectangle(*tl, *br, activefill='red', outline='black', width=2)] = rect
+
+    def select_rectangle(self, event):
+        x0, y0 = event.x, event.y
+        x1, y1 = x0 + 1, y0 + 1
+        rect = None
+        try:
+            key = self.find_overlapping(x0, y0, x1, y1)[0]
+            rect = self.rectangle_models_ids2[key]
+        except IndexError:   # case of click in an empty space of the canvas
+            pass
+        return rect
+
+
 class SpiralApp(tk.Frame):
 
     colors = ['blue', 'red', 'green', 'black', 'cyan', 'grey', 'purple',
@@ -32,47 +73,24 @@ class SpiralApp(tk.Frame):
         self.draw_rectangle_btn.pack(side='left', padx=5)
         self.commands_frame.pack()
 
-        self.canvas2 = tk.Canvas(self.master, width=100, height=HEIGHT, bg='grey80')
+        self.canvas2 = RectangleChoice(self)
         self.canvas2.pack(side='left', expand=True, fill='both')
 
-        self.canvas = tk.Canvas(self.master, width=WIDTH, height=HEIGHT)
+        self.canvas = tk.Canvas(self, width=WIDTH, height=HEIGHT)
         self.canvas.pack(side='left', expand=True, fill='both')
 
         self.spiral = Spiral()
 
-        self.make_rectangle_collection()
+        self.canvas2.bind('<ButtonRelease-1>', self.add_rect_from_selection)
 
-        self.canvas2.bind('<ButtonRelease-1>', self.select_rectangle)
-
-    def make_rectangle_collection(self):
-        whs = [(20, 80), (20, 60), (20, 40),
-               (80, 20), (60, 20), (40, 20),
-               (80, 80), (60, 60), (40, 40), (20, 20),
-               (80, 60), (80, 40), (60, 80), (60, 40)]
-        pos = [(10, 10), (40, 10), (70, 10),
-               (10, 100), (10, 130), (10, 160),
-               (10, 190), (10, 280), (10, 350), (60, 350),
-               (10, 400), (10, 470), (10, 520), (10, 610)]
-        rectangle_models = []
-        for wh, pos in zip(whs, pos):
-            w, h = wh
-            rect = Rectangle(w, h)
-            rect.calc_bbox(Anchor(*pos))
-            rectangle_models.append(rect)
-
-        self.rectangle_models_ids2 = {}
-        for rect in rectangle_models:
-            tl, br = rect.norm_bbox
-            self.rectangle_models_ids2[self.canvas2.create_rectangle(*tl, *br, activefill='red', outline='black', width=2)] = rect
-
-    def select_rectangle(self, event):
-        x0, y0 = event.x, event.y
-        x1, y1 = x0 + 1, y0 + 1
-        key = self.canvas2.find_overlapping(x0, y0, x1, y1)[0]
-        print(key, self.rectangle_models_ids2[key])
-
-    def add_rect_from_selection(self, rect):
+    def add_rect_from_selection(self, event):
+        rect = self.canvas2.select_rectangle(event)
+        if rect is None:
+            return
         print(rect)
+        w, h = rect.width, rect.height
+        self.spiral.add_rectangle(Rectangle(w, h))
+        self.draw_rectangles()
 
     def add_random_rect(self):
         width, height = random.randrange(10, 80), random.randrange(10, 80)
@@ -80,6 +98,7 @@ class SpiralApp(tk.Frame):
         self.spiral.add_rectangle(rect)
 
     def draw_rectangles(self):
+        self.canvas.delete('all')
         for rect, color in zip(self.spiral.rectangles, SpiralApp.colors):
             tl, br = rect.norm_bbox
             self.canvas.create_rectangle(*tl, *br, fill='', outline=color, width=2)
