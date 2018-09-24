@@ -24,7 +24,7 @@ class Spiral:
 
     """
 
-    def __init__(self, anchor=CENTER, xoffset: int=5, yoffset: int=5):
+    def __init__(self, anchor=CENTER, xoffset: int=15, yoffset: int=15):
         self.anchor = Anchor(*anchor)
         lr, td = self.anchor.x, self.anchor.y
         self.boundaries = {'right': lr, 'down': td, 'left': lr, 'up': td}
@@ -36,7 +36,7 @@ class Spiral:
         self.rectangles = []
         self.turn = 0
         self.last_turn_first_anchor = None
-        self.anchor_points = []
+        self.anchor_points = [self.anchor.clone()]
 
     def add_rectangle(self, rect):
         self.rectangles.append(rect)
