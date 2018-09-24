@@ -106,7 +106,6 @@ class Spiral:
                 self.turn += 1
                 current_x = self.inner_boundaries['right']
                 current_y = self.inner_boundaries['down'] + self.yoffset
-            self.anchor = Anchor(current_x, current_y)
             self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
             self.boundaries['down'] = max(self.boundaries['down'], self.inner_boundaries['down'] + h)
             self.inner_boundaries['left'] = self.boundaries['left']
@@ -120,7 +119,6 @@ class Spiral:
                 self.add_to = 'left'
                 current_x = self.inner_boundaries['left'] - self.xoffset
                 current_y = self.inner_boundaries['down']
-            self.anchor = Anchor(current_x, current_y)
             self.boundaries['down'] = max(self.boundaries['down'], self.inner_boundaries['down'] + h)
             self.boundaries['left'] = min(self.boundaries['left'], self.inner_boundaries['left'] - w)
             self.inner_boundaries['up'] = self.boundaries['up']
@@ -134,7 +132,6 @@ class Spiral:
                 self.add_to = 'up'
                 current_x = self.inner_boundaries['left']
                 current_y = self.inner_boundaries['up'] - self.yoffset
-            self.anchor = Anchor(current_x, current_y)
             self.boundaries['left'] = min(self.boundaries['left'], self.inner_boundaries['left'] - w)
             self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'])
             self.inner_boundaries['right'] = self.boundaries['right']
@@ -143,7 +140,6 @@ class Spiral:
             if current_x < self.inner_boundaries['right']:  # ne depasse pas la border
                 current_x = current_x + self.xoffset
                 current_y = self.inner_boundaries['up'] - self.yoffset
-
             else:
                 # self.inner_boundaries = {k: v for k, v in self.boundaries.items()}
                 self.turn += 1
@@ -151,11 +147,11 @@ class Spiral:
                 print('one turn completed, reset to first anchor')
                 current_x = self.inner_boundaries['right'] + self.xoffset
                 current_y = self.inner_boundaries['up']
-            self.anchor = Anchor(current_x, current_y)
             self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'] - h)
             self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
             self.inner_boundaries['down'] = self.boundaries['down']
 
+        self.anchor = Anchor(current_x, current_y)
         self.anchor_points.append(self.anchor.clone())
 
     def get_current_boundaries(self):
