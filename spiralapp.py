@@ -60,7 +60,7 @@ class SpiralApp(tk.Frame):
 
     colors = ['blue', 'red', 'green', 'black', 'cyan', 'grey', 'purple',
               'lightgreen', 'lightblue', 'gold', 'black', 'blue', 'red',
-              'green', 'black', 'cyan', 'grey', 'purple']
+              'green', 'black', 'cyan', 'grey', 'purple'] + ['black'] * 100
 
     def __init__(self, master):
         self.master = master
