@@ -56,8 +56,6 @@ class Spiral:
         rect.calc_bbox(self.anchor.clone())
         self.anchor = self.anchor + (rect.width + self.xoffset, 0)
         self.add_to = 'right'
-        # self.boundaries['right'] += rect.width + self.xoffset
-        # self.boundaries['down'] += rect.height + self.yoffset
         self.anchor_points.append(self.anchor.clone())
 
     def place(self, rect):
@@ -148,7 +146,6 @@ class Spiral:
             else:
                 self.turn += 1
                 self.add_to = 'right'
-                print('one turn completed, reset to first anchor')
                 current_x = self.inner_boundaries['right'] + self.xoffset
                 current_y = self.inner_boundaries['up']
             self.inner_boundaries['down'] = self.boundaries['down']
