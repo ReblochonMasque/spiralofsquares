@@ -59,12 +59,13 @@ class RectangleChoice(tk.Canvas):
 class SpiralApp(tk.Frame):
 
     colors = ['blue', 'red', 'green', 'black', 'cyan', 'grey', 'purple',
-              'lightgreen', 'lightblue', 'gold', 'black', 'blue', 'red',
-              'green', 'black', 'cyan', 'grey', 'purple'] + ['black'] * 100
+              'lightgreen', 'lightblue', 'gold', 'black']
 
     def __init__(self, master):
         self.master = master
         super().__init__(self.master)
+
+        self.colors_used = []
 
         self.commands_frame = tk.Frame(self.master)
         self.add_random_rectangle_btn = tk.Button(self.commands_frame, text='Add\nRandom', command=self.add_random_rect)
@@ -112,19 +113,20 @@ class SpiralApp(tk.Frame):
         rect = self.canvas2.select_rectangle(event)
         if rect is None:
             return
-        print(rect)
         w, h = rect.width, rect.height
         self.spiral.add_rectangle(Rectangle(w, h))
+        self.colors_used.append(random.choice(SpiralApp.colors))
         self.draw_rectangles()
 
     def add_random_rect(self):
-        width, height = random.randrange(10, 80), random.randrange(10, 80)
+        width, height = random.randrange(5, 20), random.randrange(5, 20)
         rect = Rectangle(width, height)
+        self.colors_used.append(random.choice(SpiralApp.colors))
         self.spiral.add_rectangle(rect)
 
     def draw_rectangles(self):
         self.canvas.delete('all')
-        for rect, color in zip(self.spiral.rectangles, SpiralApp.colors):
+        for rect, color in zip(self.spiral.rectangles, self.colors_used):
             tl, br = rect.norm_bbox
             self.canvas.create_rectangle(*tl, *br, fill='white', outline=color, width=2)
         self.draw_current_boundaries()
