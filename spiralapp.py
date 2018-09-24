@@ -128,13 +128,13 @@ class SpiralApp(tk.Frame):
         if self.show_curr_bounds:
             boundary = self.spiral.get_current_boundaries()
             x_ = boundary['right']
-            self.right_boundary_line = self.canvas.create_line(x_, 0, x_, HEIGHT, fill='lightgreen')
+            self.right_boundary_line = self.canvas.create_line(x_, 0, x_, HEIGHT, fill='green', dash=(2, 4))
             x_ = boundary['left']
-            self.left_boundary_line = self.canvas.create_line(x_, 0, x_, HEIGHT, fill='lightgreen')
+            self.left_boundary_line = self.canvas.create_line(x_, 0, x_, HEIGHT, fill='green', dash=(2, 4))
             y_ = boundary['up']
-            self.top_boundary_line = self.canvas.create_line(0, y_, WIDTH, y_, fill='lightgreen')
+            self.top_boundary_line = self.canvas.create_line(0, y_, WIDTH, y_, fill='green', dash=(2, 4))
             y_ = boundary['down']
-            self.bottom_boundary_line = self.canvas.create_line(0, y_, WIDTH, y_, fill='lightgreen')
+            self.bottom_boundary_line = self.canvas.create_line(0, y_, WIDTH, y_, fill='green', dash=(2, 4))
 
     def hide_current_boundaries(self):
         self.canvas.delete(self.right_boundary_line)
