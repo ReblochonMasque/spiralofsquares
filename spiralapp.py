@@ -94,6 +94,11 @@ class SpiralApp(tk.Frame):
         self.show_anchor_points_flag = False
         self.anchor_points_items = []
 
+        self.connect_center_points_btn = tk.Button(self.commands_frame, text='connect\ncenters', command=self.connect_center_points)
+        self.connect_center_points_btn.pack(side='left', padx=5)
+        self.connect_center_points_flag = False
+        self.center_points_items = []
+
         self.add_50_rectangles_btn = tk.Button(self.commands_frame, text='add 50\nrectangles', command=self.add_50_rectangles)
         self.add_50_rectangles_btn.pack(side='left', padx=5)
 
@@ -132,6 +137,7 @@ class SpiralApp(tk.Frame):
         self.draw_current_boundaries()
         self.draw_boundaries()
         self.draw_anchor_points()
+        self.draw_center_points()
 
     def show_current_boundaries(self):
         self.show_curr_bounds = not self.show_curr_bounds
@@ -195,7 +201,23 @@ class SpiralApp(tk.Frame):
     def hide_anchor_points(self):
         for a_point in self.anchor_points_items:
             self.canvas.delete(a_point)
-            self.anchor_points_items = []
+        self.anchor_points_items = []
+
+    def connect_center_points(self):
+        self.connect_center_points_flag = not self.connect_center_points_flag
+        self.draw_center_points()
+
+    def draw_center_points(self):
+        self.hide_center_points()
+        if self.connect_center_points_flag:
+            points = self.spiral.get_center_points()
+            for p0, p1 in zip(points[:-1], points[1:]):
+                self.center_points_items.append(self.canvas.create_line(*p0, *p1))
+
+    def hide_center_points(self):
+        for item in self.center_points_items:
+            self.canvas.delete(item)
+        self.center_points_items = []
 
     def add_50_rectangles(self, idx=50):
         if idx >= 0:
