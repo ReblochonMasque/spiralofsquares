@@ -155,6 +155,9 @@ class Spiral:
     def get_current_boundaries(self):
         return self.inner_boundaries
 
+    def get_boundaries(self):
+        return self.boundaries
+
     def get_anchor_points(self):
         return self.anchor_points
 
