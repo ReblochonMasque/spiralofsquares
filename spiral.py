@@ -111,7 +111,6 @@ class Spiral:
             self.inner_boundaries['left'] = self.boundaries['left']
 
         elif self.add_to == 'down':
-            # current_x is top left of last square
             if current_x > self.inner_boundaries['left']:  # ne depasse pas la border
                 current_x -= self.xoffset
             else:
@@ -141,7 +140,6 @@ class Spiral:
                 current_x = current_x + self.xoffset
                 current_y = self.inner_boundaries['up'] - self.yoffset
             else:
-                # self.inner_boundaries = {k: v for k, v in self.boundaries.items()}
                 self.turn += 1
                 self.add_to = 'right'
                 print('one turn completed, reset to first anchor')
