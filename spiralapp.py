@@ -223,7 +223,7 @@ class SpiralApp(tk.Frame):
         if idx >= 0:
             self.add_random_rect()
             self.draw_rectangles()
-            self.after(100, self.add_50_rectangles, idx-1)
+            self.after(10, self.add_50_rectangles, idx-1)
 
 
 if __name__ == '__main__':
