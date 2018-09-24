@@ -162,6 +162,13 @@ class Spiral:
     def get_anchor_points(self):
         return self.anchor_points
 
+    def get_center_points(self):
+        center_points = []
+        for rect in self.rectangles:
+            center = rect.get_center()
+            center_points.append(center)
+        return center_points
+
 
 if __name__ == '__main__':
 
