@@ -127,7 +127,7 @@ class Spiral:
         elif self.add_to == 'left':
             if current_y > self.inner_boundaries['up']:  # ne depasse pas la border
                 current_x = self.inner_boundaries['left'] - self.xoffset
-                current_y = self.inner_boundaries['down'] - self.yoffset - h
+                current_y -= self.yoffset
             else:
                 self.turn += 1
                 self.add_to = 'up'
