@@ -77,7 +77,7 @@ class Spiral:
             self.anchor = self.anchor + (-w, 0)
             self.boundaries['down'] = max(self.boundaries['down'], self.inner_boundaries['down'] + h + self.yoffset)
             if self.boundaries['left'] > self.anchor.x:  # -w already accounted for
-                self.boundaries['left'] = self.anchor.x - self.xoffset
+                self.boundaries['left'] = self.anchor.x  # - self.xoffset
 
         if self.add_to == 'left':
             anchor = anchor + (-w, -h)
@@ -119,7 +119,7 @@ class Spiral:
             self.inner_boundaries['left'] = self.boundaries['left']
 
         elif self.add_to == 'down':
-            if current_x > self.inner_boundaries['left']:  # ne depasse pas la border
+            if current_x > self.inner_boundaries['left']:    # ne depasse pas la border
                 current_x -= self.xoffset
             else:
                 self.turn += 1
@@ -129,18 +129,18 @@ class Spiral:
             self.inner_boundaries['up'] = self.boundaries['up']
 
         elif self.add_to == 'left':
-            if current_y > self.inner_boundaries['up']:  # ne depasse pas la border
+            if current_y > self.inner_boundaries['up']:      # ne depasse pas la border
                 current_x = self.inner_boundaries['left'] - self.xoffset
                 current_y -= self.yoffset
             else:
                 self.turn += 1
                 self.add_to = 'up'
-                current_x = self.inner_boundaries['left']
+                current_x = self.inner_boundaries['left'] # + self.xoffset
                 current_y = self.inner_boundaries['up'] - self.yoffset
             self.inner_boundaries['right'] = self.boundaries['right']
 
         elif self.add_to == 'up':
-            if current_x < self.inner_boundaries['right']:  # ne depasse pas la border
+            if current_x < self.inner_boundaries['right']:   # ne depasse pas la border
                 current_x = current_x + self.xoffset
                 current_y = self.inner_boundaries['up'] - self.yoffset
             else:
@@ -172,26 +172,26 @@ class Spiral:
 
 if __name__ == '__main__':
 
-    cr = 1
+    cr = 0
     if cr:
         num_rect = 18
     else:
-        num_rect = 14
-    rectangles = [Rectangle(random.randrange(20, 100), random.randrange(20, 100)) for _ in range(num_rect)]
+        num_rect = 121
+    rectangles = [Rectangle(random.randrange(30, 60), random.randrange(30, 60)) for _ in range(num_rect)]
 
     spiral = Spiral()
     for rect in rectangles:
         spiral.add_rectangle(rect)
 
     root = tk.Tk()
-    canvas = tk.Canvas(root, width=WIDTH, height=HEIGHT)
+    canvas = tk.Canvas(root, width=WIDTH, height=HEIGHT, bg='beige')
     canvas.pack(expand=True, fill='both')
 
     if cr:
         for idx, (rect, color) in enumerate(zip(spiral.rectangles, ['blue', 'red', 'green', 'black', 'cyan', 'grey', 'purple',\
                 'lightgreen', 'lightblue', 'gold', 'black', 'blue', 'red', 'green', 'black', 'cyan', 'grey', 'purple'])):
             tl, br = rect.norm_bbox
-            canvas.create_rectangle(*tl, *br, fill='', outline=color, width=2)
+            canvas.create_rectangle(*tl, *br, fill='white', outline=color, width=2)
             x, y = tl
             canvas.create_oval(x + 2, y + 2, x - 2, y - 1)
             print(*rect.get_center())
@@ -199,7 +199,7 @@ if __name__ == '__main__':
     else:
         for idx, rect in enumerate(spiral.rectangles):
             tl, br = rect.norm_bbox
-            canvas.create_rectangle(*tl, *br, fill='', outline='black', width=2)
+            canvas.create_rectangle(*tl, *br, fill='white', outline='black', width=2)
             x, y = tl
             canvas.create_oval(x + 2, y + 2, x - 2, y - 1)
             print(*rect.get_center())
