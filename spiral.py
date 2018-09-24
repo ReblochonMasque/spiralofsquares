@@ -36,6 +36,7 @@ class Spiral:
         self.rectangles = []
         self.turn = 0
         self.last_turn_first_anchor = None
+        self.anchor_points = []
 
     def add_rectangle(self, rect):
         self.rectangles.append(rect)
@@ -59,6 +60,7 @@ class Spiral:
         self.boundaries['right'] += rect.width + self.xoffset
         self.boundaries['down'] += rect.height + self.yoffset
         self.last_turn_first_anchor = self.anchor.clone()
+        self.anchor_points.append(self.anchor.clone())
 
     def place(self, rect):
         """
@@ -156,8 +158,13 @@ class Spiral:
             self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
             self.inner_boundaries['down'] = self.boundaries['down']
 
+        self.anchor_points.append(self.anchor.clone())
+
     def get_current_boundaries(self):
         return self.inner_boundaries
+
+    def get_anchor_points(self):
+        return self.anchor_points
 
 
 if __name__ == '__main__':

@@ -72,13 +72,18 @@ class SpiralApp(tk.Frame):
         self.draw_rectangle_btn = tk.Button(self.commands_frame, text='Draw\nRect', command=self.draw_rectangles)
         self.draw_rectangle_btn.pack(side='left', padx=5)
 
-        self.show_current_boundaries = tk.Button(self.commands_frame, text='inner\nbounds', command=self.show_current_boundaries)
-        self.show_current_boundaries.pack(side='left', padx=5)
+        self.show_current_boundaries_btn = tk.Button(self.commands_frame, text='inner\nbounds', command=self.show_current_boundaries)
+        self.show_current_boundaries_btn.pack(side='left', padx=5)
         self.right_boundary_line = None
         self.left_boundary_line = None
         self.top_boundary_line = None
         self.bottom_boundary_line = None
         self.show_curr_bounds = False
+
+        self.show_anchor_points_btn = tk.Button(self.commands_frame, text='anchor\npoints', command=self.show_anchor_points)
+        self.show_anchor_points_btn.pack(side='left', padx=5)
+        self.show_anchor_points_flag = False
+        self.anchor_points_items = []
 
         self.commands_frame.pack()
 
@@ -101,6 +106,7 @@ class SpiralApp(tk.Frame):
         self.spiral.add_rectangle(Rectangle(w, h))
         self.draw_rectangles()
         self.draw_current_boundaries()
+        self.draw_anchor_points()
 
     def add_random_rect(self):
         width, height = random.randrange(10, 80), random.randrange(10, 80)
@@ -135,6 +141,24 @@ class SpiralApp(tk.Frame):
         self.canvas.delete(self.left_boundary_line)
         self.canvas.delete(self.top_boundary_line)
         self.canvas.delete(self.bottom_boundary_line)
+
+    def show_anchor_points(self):
+        self.show_anchor_points_flag = not self.show_anchor_points_flag
+        self.draw_anchor_points()
+
+    def draw_anchor_points(self):
+        self.hide_anchor_points()
+        if self.show_anchor_points_flag:
+            anchor_points = self.spiral.get_anchor_points()
+            for point in anchor_points:
+                x, y = point
+                x0, y0, x1, y1 = x - 2, y - 2, x + 2, y + 2
+                self.anchor_points_items.append(self.canvas.create_oval(x0, y0, x1, y1))
+
+    def hide_anchor_points(self):
+        for a_point in self.anchor_points_items:
+            self.canvas.delete(a_point)
+            self.anchor_points_items = []
 
 
 if __name__ == '__main__':
