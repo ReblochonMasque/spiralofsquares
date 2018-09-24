@@ -98,7 +98,7 @@ class SpiralApp(tk.Frame):
         self.canvas2 = RectangleChoice(self)
         self.canvas2.pack(side='left', expand=True, fill='both')
 
-        self.canvas = tk.Canvas(self, width=WIDTH, height=HEIGHT)
+        self.canvas = tk.Canvas(self, width=WIDTH, height=HEIGHT, bg='beige')
         self.canvas.pack(side='left', expand=True, fill='both')
 
         self.spiral = Spiral()
@@ -126,7 +126,7 @@ class SpiralApp(tk.Frame):
         self.canvas.delete('all')
         for rect, color in zip(self.spiral.rectangles, SpiralApp.colors):
             tl, br = rect.norm_bbox
-            self.canvas.create_rectangle(*tl, *br, fill='', outline=color, width=2)
+            self.canvas.create_rectangle(*tl, *br, fill='white', outline=color, width=2)
 
     def show_current_boundaries(self):
         self.show_curr_bounds = not self.show_curr_bounds
