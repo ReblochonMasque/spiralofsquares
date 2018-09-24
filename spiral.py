@@ -156,6 +156,9 @@ class Spiral:
             self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
             self.inner_boundaries['down'] = self.boundaries['down']
 
+    def get_current_boundaries(self):
+        return self.inner_boundaries
+
 
 if __name__ == '__main__':
 

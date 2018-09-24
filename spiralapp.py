@@ -71,6 +71,15 @@ class SpiralApp(tk.Frame):
         self.add_random_rectangle_btn.pack(side='left', padx=5)
         self.draw_rectangle_btn = tk.Button(self.commands_frame, text='Draw\nRect', command=self.draw_rectangles)
         self.draw_rectangle_btn.pack(side='left', padx=5)
+
+        self.show_current_boundaries = tk.Button(self.commands_frame, text='inner\nbounds', command=self.show_current_boundaries)
+        self.show_current_boundaries.pack(side='left', padx=5)
+        self.right_boundary_line = None
+        self.left_boundary_line = None
+        self.top_boundary_line = None
+        self.bottom_boundary_line = None
+        self.show_curr_bounds = False
+
         self.commands_frame.pack()
 
         self.canvas2 = RectangleChoice(self)
@@ -91,6 +100,7 @@ class SpiralApp(tk.Frame):
         w, h = rect.width, rect.height
         self.spiral.add_rectangle(Rectangle(w, h))
         self.draw_rectangles()
+        self.draw_current_boundaries()
 
     def add_random_rect(self):
         width, height = random.randrange(10, 80), random.randrange(10, 80)
@@ -102,6 +112,29 @@ class SpiralApp(tk.Frame):
         for rect, color in zip(self.spiral.rectangles, SpiralApp.colors):
             tl, br = rect.norm_bbox
             self.canvas.create_rectangle(*tl, *br, fill='', outline=color, width=2)
+
+    def show_current_boundaries(self):
+        self.show_curr_bounds = not self.show_curr_bounds
+        self.draw_current_boundaries()
+
+    def draw_current_boundaries(self):
+        self.hide_current_boundaries()
+        if self.show_curr_bounds:
+            boundary = self.spiral.get_current_boundaries()
+            x_ = boundary['right']
+            self.right_boundary_line = self.canvas.create_line(x_, 0, x_, HEIGHT, fill='lightgreen')
+            x_ = boundary['left']
+            self.left_boundary_line = self.canvas.create_line(x_, 0, x_, HEIGHT, fill='lightgreen')
+            y_ = boundary['up']
+            self.top_boundary_line = self.canvas.create_line(0, y_, WIDTH, y_, fill='lightgreen')
+            y_ = boundary['down']
+            self.bottom_boundary_line = self.canvas.create_line(0, y_, WIDTH, y_, fill='lightgreen')
+
+    def hide_current_boundaries(self):
+        self.canvas.delete(self.right_boundary_line)
+        self.canvas.delete(self.left_boundary_line)
+        self.canvas.delete(self.top_boundary_line)
+        self.canvas.delete(self.bottom_boundary_line)
 
 
 if __name__ == '__main__':
