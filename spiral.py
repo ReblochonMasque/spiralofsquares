@@ -64,22 +64,26 @@ class Spiral:
         """
         places a rectangle at the current anchor, taking offsets and side into account
         """
+        w, h = rect.width, rect.height
+        anchor = self.anchor.clone()
+
         if self.add_to == 'right':
-            rect.calc_bbox(self.anchor.clone())
+            rect.calc_bbox(anchor)
 
         if self.add_to == 'down':
-            self.anchor = self.anchor + (-rect.width, 0)
-            rect.calc_bbox(self.anchor.clone())
+            anchor = anchor + (-w, 0)
+            rect.calc_bbox(anchor)
+            self.anchor = self.anchor + (-w, 0)
 
         if self.add_to == 'left':
-            anchor = self.anchor + (-rect.width, -rect.height)
-            rect.calc_bbox(anchor.clone())
-            self.anchor = self.anchor + (0, -rect.height)
+            anchor = anchor + (-w, -h)
+            rect.calc_bbox(anchor)
+            self.anchor = self.anchor + (-w, -h)
 
         if self.add_to == 'up':
-            anchor = self.anchor + (0, -rect.height)
+            anchor = anchor + (0, -h)
             rect.calc_bbox(anchor)
-            self.anchor = self.anchor + (rect.width, self.xoffset)
+            self.anchor = self.anchor + (w, -h)
 
     def calc_next_add_to_side(self):
         """
