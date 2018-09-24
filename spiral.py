@@ -35,7 +35,6 @@ class Spiral:
         self.yoffset = yoffset
         self.rectangles = []
         self.turn = 0
-        self.last_turn_first_anchor = None
         self.anchor_points = [self.anchor.clone()]
 
     def add_rectangle(self, rect):
@@ -59,7 +58,6 @@ class Spiral:
         self.add_to = 'right'
         self.boundaries['right'] += rect.width + self.xoffset
         self.boundaries['down'] += rect.height + self.yoffset
-        self.last_turn_first_anchor = self.anchor.clone()
         self.anchor_points.append(self.anchor.clone())
 
     def place(self, rect):
@@ -139,8 +137,7 @@ class Spiral:
             self.inner_boundaries['right'] = self.boundaries['right']
 
         elif self.add_to == 'up':
-            # if self.current_x < self.inner_boundaries['right']:  # ne depasse pas la border
-            if self.current_x < self.last_turn_first_anchor.x:
+            if current_x < self.inner_boundaries['right']:  # ne depasse pas la border
                 current_x = current_x + self.xoffset
                 current_y = self.inner_boundaries['up'] - self.yoffset
 
