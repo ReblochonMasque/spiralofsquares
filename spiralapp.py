@@ -158,7 +158,7 @@ class SpiralApp(tk.Frame):
     def draw_boundaries(self):
         self.hide_boundaries()
         if self.show_bounds:
-            boundary = self.spiral.get_current_boundaries()
+            boundary = self.spiral.get_boundaries()
             x_ = boundary['right']
             self.right_b_line = self.canvas.create_line(x_, 0, x_, HEIGHT, fill='blue', dash=(1, 4))
             x_ = boundary['left']

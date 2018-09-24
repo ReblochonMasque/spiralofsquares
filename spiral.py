@@ -24,7 +24,7 @@ class Spiral:
 
     """
 
-    def __init__(self, anchor=CENTER, xoffset: int=5, yoffset: int=5):
+    def __init__(self, anchor=CENTER, xoffset: int=0, yoffset: int=0):
         self.anchor = Anchor(*anchor)
         lr, td = self.anchor.x, self.anchor.y
         self.boundaries = {'right': lr, 'down': td, 'left': lr, 'up': td}
@@ -56,8 +56,8 @@ class Spiral:
         rect.calc_bbox(self.anchor.clone())
         self.anchor = self.anchor + (rect.width + self.xoffset, 0)
         self.add_to = 'right'
-        self.boundaries['right'] += rect.width + self.xoffset
-        self.boundaries['down'] += rect.height + self.yoffset
+        # self.boundaries['right'] += rect.width + self.xoffset
+        # self.boundaries['down'] += rect.height + self.yoffset
         self.anchor_points.append(self.anchor.clone())
 
     def place(self, rect):
@@ -69,21 +69,33 @@ class Spiral:
 
         if self.add_to == 'right':
             rect.calc_bbox(anchor)
+            self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w + self.xoffset)
+            if self.boundaries['down'] < anchor.y + h:
+                self.boundaries['down'] = anchor.y + h
 
         if self.add_to == 'down':
             anchor = anchor + (-w, 0)
             rect.calc_bbox(anchor)
             self.anchor = self.anchor + (-w, 0)
+            self.boundaries['down'] = max(self.boundaries['down'], self.inner_boundaries['down'] + h + self.yoffset)
+            if self.boundaries['left'] > self.anchor.x:  # -w already accounted for
+                self.boundaries['left'] = self.anchor.x - self.xoffset
 
         if self.add_to == 'left':
             anchor = anchor + (-w, -h)
             rect.calc_bbox(anchor)
             self.anchor = self.anchor + (-w, -h)
+            self.boundaries['left'] = min(self.boundaries['left'], self.inner_boundaries['left'] - w - self.xoffset)
+            if self.boundaries['up'] < self.anchor.x - w:
+                self.boundaries['up'] = self.anchor.x - w
 
         if self.add_to == 'up':
             anchor = anchor + (0, -h)
             rect.calc_bbox(anchor)
             self.anchor = self.anchor + (w, -h)
+            self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'] - h - self.yoffset)
+            if self.boundaries['right'] > self.anchor.x + w:
+                self.boundaries['right'] = self.anchor.x + w
 
     def calc_next_add_to_side(self):
         """
@@ -106,8 +118,6 @@ class Spiral:
                 self.turn += 1
                 current_x = self.inner_boundaries['right']
                 current_y = self.inner_boundaries['down'] + self.yoffset
-            self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
-            self.boundaries['down'] = max(self.boundaries['down'], self.inner_boundaries['down'] + h)
             self.inner_boundaries['left'] = self.boundaries['left']
 
         elif self.add_to == 'down':
@@ -118,8 +128,6 @@ class Spiral:
                 self.add_to = 'left'
                 current_x = self.inner_boundaries['left'] - self.xoffset
                 current_y = self.inner_boundaries['down']
-            self.boundaries['down'] = max(self.boundaries['down'], self.inner_boundaries['down'] + h)
-            self.boundaries['left'] = min(self.boundaries['left'], self.inner_boundaries['left'] - w)
             self.inner_boundaries['up'] = self.boundaries['up']
 
         elif self.add_to == 'left':
@@ -131,8 +139,6 @@ class Spiral:
                 self.add_to = 'up'
                 current_x = self.inner_boundaries['left']
                 current_y = self.inner_boundaries['up'] - self.yoffset
-            self.boundaries['left'] = min(self.boundaries['left'], self.inner_boundaries['left'] - w)
-            self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'])
             self.inner_boundaries['right'] = self.boundaries['right']
 
         elif self.add_to == 'up':
@@ -145,8 +151,6 @@ class Spiral:
                 print('one turn completed, reset to first anchor')
                 current_x = self.inner_boundaries['right'] + self.xoffset
                 current_y = self.inner_boundaries['up']
-            self.boundaries['up'] = min(self.boundaries['up'], self.inner_boundaries['up'] - h)
-            self.boundaries['right'] = max(self.boundaries['right'], self.inner_boundaries['right'] + w)
             self.inner_boundaries['down'] = self.boundaries['down']
 
         self.anchor = Anchor(current_x, current_y)
