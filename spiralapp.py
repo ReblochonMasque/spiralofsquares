@@ -93,6 +93,9 @@ class SpiralApp(tk.Frame):
         self.show_anchor_points_flag = False
         self.anchor_points_items = []
 
+        self.add_50_rectangles_btn = tk.Button(self.commands_frame, text='add 50\nrectangles', command=self.add_50_rectangles)
+        self.add_50_rectangles_btn.pack(side='left', padx=5)
+
         self.commands_frame.pack()
 
         self.canvas2 = RectangleChoice(self)
@@ -113,9 +116,6 @@ class SpiralApp(tk.Frame):
         w, h = rect.width, rect.height
         self.spiral.add_rectangle(Rectangle(w, h))
         self.draw_rectangles()
-        self.draw_current_boundaries()
-        self.draw_boundaries()
-        self.draw_anchor_points()
 
     def add_random_rect(self):
         width, height = random.randrange(10, 80), random.randrange(10, 80)
@@ -127,6 +127,9 @@ class SpiralApp(tk.Frame):
         for rect, color in zip(self.spiral.rectangles, SpiralApp.colors):
             tl, br = rect.norm_bbox
             self.canvas.create_rectangle(*tl, *br, fill='white', outline=color, width=2)
+        self.draw_current_boundaries()
+        self.draw_boundaries()
+        self.draw_anchor_points()
 
     def show_current_boundaries(self):
         self.show_curr_bounds = not self.show_curr_bounds
@@ -191,6 +194,12 @@ class SpiralApp(tk.Frame):
         for a_point in self.anchor_points_items:
             self.canvas.delete(a_point)
             self.anchor_points_items = []
+
+    def add_50_rectangles(self, idx=50):
+        if idx >= 0:
+            self.add_random_rect()
+            self.draw_rectangles()
+            self.after(100, self.add_50_rectangles, idx-1)
 
 
 if __name__ == '__main__':
