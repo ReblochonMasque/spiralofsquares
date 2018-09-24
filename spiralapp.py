@@ -80,6 +80,14 @@ class SpiralApp(tk.Frame):
         self.bottom_boundary_line = None
         self.show_curr_bounds = False
 
+        self.show_boundaries_btn = tk.Button(self.commands_frame, text='outer\nbounds', command=self.show_boundaries)
+        self.show_boundaries_btn.pack(side='left', padx=5)
+        self.right_b_line = None
+        self.left_b_line = None
+        self.top_b_line = None
+        self.bottom_b_line = None
+        self.show_bounds = False
+
         self.show_anchor_points_btn = tk.Button(self.commands_frame, text='anchor\npoints', command=self.show_anchor_points)
         self.show_anchor_points_btn.pack(side='left', padx=5)
         self.show_anchor_points_flag = False
@@ -106,6 +114,7 @@ class SpiralApp(tk.Frame):
         self.spiral.add_rectangle(Rectangle(w, h))
         self.draw_rectangles()
         self.draw_current_boundaries()
+        self.draw_boundaries()
         self.draw_anchor_points()
 
     def add_random_rect(self):
@@ -141,6 +150,29 @@ class SpiralApp(tk.Frame):
         self.canvas.delete(self.left_boundary_line)
         self.canvas.delete(self.top_boundary_line)
         self.canvas.delete(self.bottom_boundary_line)
+
+    def show_boundaries(self):
+        self.show_bounds = not self.show_bounds
+        self.draw_boundaries()
+
+    def draw_boundaries(self):
+        self.hide_boundaries()
+        if self.show_bounds:
+            boundary = self.spiral.get_current_boundaries()
+            x_ = boundary['right']
+            self.right_b_line = self.canvas.create_line(x_, 0, x_, HEIGHT, fill='blue', dash=(1, 4))
+            x_ = boundary['left']
+            self.left_b_line = self.canvas.create_line(x_, 0, x_, HEIGHT, fill='blue', dash=(1, 4))
+            y_ = boundary['up']
+            self.top_b_line = self.canvas.create_line(0, y_, WIDTH, y_, fill='blue', dash=(1, 4))
+            y_ = boundary['down']
+            self.bottom_b_line = self.canvas.create_line(0, y_, WIDTH, y_, fill='blue', dash=(1, 4))
+
+    def hide_boundaries(self):
+        self.canvas.delete(self.right_b_line)
+        self.canvas.delete(self.left_b_line)
+        self.canvas.delete(self.top_b_line)
+        self.canvas.delete(self.bottom_b_line)
 
     def show_anchor_points(self):
         self.show_anchor_points_flag = not self.show_anchor_points_flag
