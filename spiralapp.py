@@ -102,6 +102,9 @@ class SpiralApp(tk.Frame):
         self.add_50_rectangles_btn = tk.Button(self.commands_frame, text='add 50\nrectangles', command=self.add_50_rectangles)
         self.add_50_rectangles_btn.pack(side='left', padx=5)
 
+        self.clear_btn = tk.Button(self.commands_frame, text='clear\nall', command=self.clear)
+        self.clear_btn.pack(side='left', padx=5)
+
         self.commands_frame.pack()
 
         self.canvas2 = RectangleChoice(self)
@@ -113,6 +116,29 @@ class SpiralApp(tk.Frame):
         self.spiral = Spiral()
 
         self.canvas2.bind('<ButtonRelease-1>', self.add_rect_from_selection)
+
+    def clear(self):
+        self.canvas.delete('all')
+
+        self.right_boundary_line = None
+        self.left_boundary_line = None
+        self.top_boundary_line = None
+        self.bottom_boundary_line = None
+        self.show_curr_bounds = False
+
+        self.right_b_line = None
+        self.left_b_line = None
+        self.top_b_line = None
+        self.bottom_b_line = None
+        self.show_bounds = False
+
+        self.show_anchor_points_flag = False
+        self.anchor_points_items = []
+
+        self.connect_center_points_flag = False
+        self.center_points_items = []
+
+        self.spiral = Spiral()
 
     def add_rect_from_selection(self, event):
         rect = self.canvas2.select_rectangle(event)
