@@ -60,7 +60,8 @@ class Spiral:
 
     def place(self, rect):
         """
-        places a rectangle at the current anchor, taking offsets and side into account
+        places a rectangle at the current anchor, taking offsets and side into account,
+        and minding the orientation of the rectangle wrt anchor point
         """
         w, h = rect.width, rect.height
         anchor = self.anchor.clone()
