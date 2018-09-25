@@ -10,9 +10,9 @@ class Rectangle:
         self.width = width
         self.height = height
         center = self.width//2, self.height//2
-        self.bbox = [Anchor(*center) + (-self.width//2, -self.height//2),
-                     Anchor(*center) + (self.width//2, self.height//2)]
+        self.bbox = None
         self.norm_bbox = None
+        self.calc_bbox(Anchor())
         self.normalize_bbox()
 
     def calc_bbox(self, anchor):
@@ -29,7 +29,6 @@ class Rectangle:
         x0, y0 = p0
         x1, y1 = p1
         self.norm_bbox = [Anchor(min(x0, x1), min(y0, y1)), Anchor(max(x0, x1), max(y0, y1))]
-        # self.bbox = [Anchor(min(x0, x1), min(y0, y1)), Anchor(max(x0, x1), max(y0, y1))]
 
     def get_corners(self):
         tl, br = self.bbox
