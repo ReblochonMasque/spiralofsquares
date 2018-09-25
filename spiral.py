@@ -107,10 +107,10 @@ class Spiral:
         current_x, current_y = self.anchor
 
         if self.add_to == 'right':
-            if current_y + h < self.inner_boundaries['down']:  # ne depasse pas la border
+            if current_y + h < self.inner_boundaries['down']:   # not overstep border
                 current_x = self.inner_boundaries['right'] + self.xoffset
                 current_y += h + self.yoffset
-            else:
+            else:                                               # oversteps -> change direction
                 self.add_to = 'down'
                 current_x += self.xoffset
                 self.turn += 1
@@ -119,7 +119,7 @@ class Spiral:
             self.inner_boundaries['left'] = self.boundaries['left']
 
         elif self.add_to == 'down':
-            if current_x > self.inner_boundaries['left']:    # ne depasse pas la border
+            if current_x > self.inner_boundaries['left']:
                 current_x -= self.xoffset
             else:
                 self.turn += 1
@@ -129,18 +129,18 @@ class Spiral:
             self.inner_boundaries['up'] = self.boundaries['up']
 
         elif self.add_to == 'left':
-            if current_y > self.inner_boundaries['up']:      # ne depasse pas la border
+            if current_y > self.inner_boundaries['up']:
                 current_x = self.inner_boundaries['left'] - self.xoffset
                 current_y -= self.yoffset
             else:
                 self.turn += 1
                 self.add_to = 'up'
-                current_x = self.inner_boundaries['left'] # + self.xoffset
+                current_x = self.inner_boundaries['left']
                 current_y = self.inner_boundaries['up'] - self.yoffset
             self.inner_boundaries['right'] = self.boundaries['right']
 
         elif self.add_to == 'up':
-            if current_x < self.inner_boundaries['right']:   # ne depasse pas la border
+            if current_x < self.inner_boundaries['right']:
                 current_x = current_x + self.xoffset
                 current_y = self.inner_boundaries['up'] - self.yoffset
             else:
