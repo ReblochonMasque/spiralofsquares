@@ -29,7 +29,7 @@ class Spiral:
         lr, td = self.anchor.x, self.anchor.y
         self.boundaries = {'right': lr, 'down': td, 'left': lr, 'up': td}
         self.current_x, self.current_y = self.anchor
-        self.inner_boundaries = None
+        self.inner_boundaries = {'right': lr, 'down': td, 'left': lr, 'up': td}
         self.add_to = None
         self.xoffset = xoffset
         self.yoffset = yoffset
@@ -154,7 +154,7 @@ class Spiral:
         self.anchor_points.append(self.anchor.clone())
 
     def get_current_boundaries(self):
-        return self.inner_boundaries if self.inner_boundaries else self.boundaries
+        return self.inner_boundaries
 
     def get_boundaries(self):
         return self.boundaries
