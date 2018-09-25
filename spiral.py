@@ -97,10 +97,9 @@ class Spiral:
 
     def calc_next_add_to_side(self):
         """
-        calculates the next anchor placement and the side we are on.
-        updates the inner_boundary each full turn cycle
-        updates the boundary each new rectangle (used to update inner at next turn cycle)
-
+        calculates the next anchor position.
+        cyclically updates the inner boundary for the next turn; this is out of phase
+        so it doesn't affect the current turn.
         """
 
         w, h = self.rectangles[-1].width, self.rectangles[-1].height
