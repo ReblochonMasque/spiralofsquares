@@ -78,7 +78,7 @@ class Spiral:
             self.anchor = self.anchor + (-w, 0)
             self.boundaries['down'] = max(self.boundaries['down'], self.inner_boundaries['down'] + h + self.yoffset)
             if self.boundaries['left'] > self.anchor.x:  # -w already accounted for
-                self.boundaries['left'] = self.anchor.x  # - self.xoffset
+                self.boundaries['left'] = self.anchor.x
 
         if self.add_to == 'left':
             anchor = anchor + (-w, -h)
