@@ -154,7 +154,7 @@ class Spiral:
         self.anchor_points.append(self.anchor.clone())
 
     def get_current_boundaries(self):
-        return self.inner_boundaries
+        return self.inner_boundaries if self.inner_boundaries else self.boundaries
 
     def get_boundaries(self):
         return self.boundaries
