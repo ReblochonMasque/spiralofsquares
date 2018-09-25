@@ -85,8 +85,8 @@ class Spiral:
             rect.calc_bbox(anchor)
             self.anchor = self.anchor + (-w, -h)
             self.boundaries['left'] = min(self.boundaries['left'], self.inner_boundaries['left'] - w - self.xoffset)
-            if self.boundaries['up'] < self.anchor.x - w:
-                self.boundaries['up'] = self.anchor.x - w
+            if self.boundaries['up'] < self.anchor.y - h:
+                self.boundaries['up'] = self.anchor.y - h
 
         if self.add_to == 'up':
             anchor = anchor + (0, -h)
