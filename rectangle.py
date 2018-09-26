@@ -9,7 +9,6 @@ class Rectangle:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        center = self.width//2, self.height//2
         self.bbox = None
         self.norm_bbox = None
         self.calc_bbox(Anchor())
