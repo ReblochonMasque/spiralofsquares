@@ -34,7 +34,6 @@ class Spiral:
         self.xoffset = xoffset
         self.yoffset = yoffset
         self.rectangles = []
-        self.turn = 0
         self.anchor_points = [self.anchor.clone()]
 
     def add_rectangle(self, rect):
@@ -113,7 +112,6 @@ class Spiral:
             else:                                               # oversteps -> change direction
                 self.add_to = 'down'
                 current_x += self.xoffset
-                self.turn += 1
                 current_x = self.inner_boundaries['right']
                 current_y = self.inner_boundaries['down'] + self.yoffset
             self.inner_boundaries['left'] = self.boundaries['left']
@@ -122,7 +120,6 @@ class Spiral:
             if current_x > self.inner_boundaries['left']:
                 current_x -= self.xoffset
             else:
-                self.turn += 1
                 self.add_to = 'left'
                 current_x = self.inner_boundaries['left'] - self.xoffset
                 current_y = self.inner_boundaries['down']
@@ -133,7 +130,6 @@ class Spiral:
                 current_x = self.inner_boundaries['left'] - self.xoffset
                 current_y -= self.yoffset
             else:
-                self.turn += 1
                 self.add_to = 'up'
                 current_x = self.inner_boundaries['left']
                 current_y = self.inner_boundaries['up'] - self.yoffset
@@ -144,7 +140,6 @@ class Spiral:
                 current_x = current_x + self.xoffset
                 current_y = self.inner_boundaries['up'] - self.yoffset
             else:
-                self.turn += 1
                 self.add_to = 'right'
                 current_x = self.inner_boundaries['right'] + self.xoffset
                 current_y = self.inner_boundaries['up']
