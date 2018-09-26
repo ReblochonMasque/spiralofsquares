@@ -20,7 +20,7 @@ class Spiral:
     'right' --> add to the right side, going down
     'down'  --> add to the bottom side, going left
     'left'  --> add to the left side, going up
-    'up'    --> add to tthe top side, going right
+    'up'    --> add to the top side, going right
 
     """
 
