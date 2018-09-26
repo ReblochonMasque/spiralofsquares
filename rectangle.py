@@ -29,12 +29,6 @@ class Rectangle:
         x1, y1 = p1
         self.norm_bbox = [Anchor(min(x0, x1), min(y0, y1)), Anchor(max(x0, x1), max(y0, y1))]
 
-    def get_corners(self):
-        tl, br = self.bbox
-        tr = br[0], tl[1]
-        bl = tl[0], br[1]
-        return tl, tr, br, bl
-
     def get_center(self):
         tl, br = self.bbox
         return tl.get_mid(br)
